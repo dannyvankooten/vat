@@ -6,7 +6,6 @@ import (
 	"errors"
 	"html/template"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -42,18 +41,18 @@ var (
 	ErrServiceUnreachable = errors.New("Validation service is offline.")
 )
 
-func Validate(n string) bool {
-	format := ValidateFormat(n)
+func Validate(n string) (bool, error) {
+	format, err := ValidateFormat(n)
 	existence := false
 
 	if format {
-		existence, _ = ValidateExistence(n)
+		existence, err = ValidateExistence(n)
 	}
 
-	return format && existence
+	return (format && existence), err
 }
 
-func ValidateFormat(n string) bool {
+func ValidateFormat(n string) (bool, error) {
 	patterns := map[string]string{
 		"AT": "U[A-Z\\d]{8}",
 		"BE": "(0\\d{9}|\\d{10})",
@@ -85,17 +84,18 @@ func ValidateFormat(n string) bool {
 		"SK": "\\d{10}",
 	}
 
+	if len(n) < 3 {
+		return false, nil
+	}
+
 	n = strings.ToUpper(n)
 	pattern, ok := patterns[n[0:2]]
 	if !ok {
-		return false
+		return false, nil
 	}
 
 	matched, err := regexp.MatchString(pattern, n[2:])
-	if err != nil {
-		log.Fatal(err)
-	}
-	return matched
+	return matched, err
 }
 
 func ValidateExistence(n string) (bool, error) {
