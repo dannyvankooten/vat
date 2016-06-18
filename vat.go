@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-type VATresponse struct {
+type viesResponse struct {
 	CountryCode string
 	VATnumber   string
 	RequestDate time.Time
@@ -104,7 +104,7 @@ func ValidateExistence(n string) (bool, error) {
 }
 
 // Check returns *VATresponse for vat number
-func checkVAT(vatNumber string) (*VATresponse, error) {
+func checkVAT(vatNumber string) (*viesResponse, error) {
 	if len(vatNumber) < 3 {
 		return nil, ErrInvalidVATNumber
 	}
@@ -115,7 +115,7 @@ func checkVAT(vatNumber string) (*VATresponse, error) {
 	}
 	eb := bytes.NewBufferString(e)
 	client := http.Client{
-		Timeout: time.Duration(time.Duration(Timeout) * time.Second),
+		Timeout: time.Duration(Timeout) * time.Second,
 	}
 	res, err := client.Post(serviceURL, "text/xml;charset=UTF-8", eb)
 	if err != nil {
@@ -155,7 +155,7 @@ func checkVAT(vatNumber string) (*VATresponse, error) {
 		return nil, err
 	}
 
-	r := &VATresponse{
+	r := &viesResponse{
 		CountryCode: rd.Soap.Soap.CountryCode,
 		VATnumber:   rd.Soap.Soap.VATnumber,
 		RequestDate: pDate,
