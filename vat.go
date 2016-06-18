@@ -1,11 +1,22 @@
-// Package vat provides VAT number verification for Golang.
+/*
+Package vat provides VAT number verification for Golang.
+
+Example:
+		// validates format + existence
+		validity := vat.Validate("NL123456789B01")
+
+		// validate format
+		validity := vat.ValidateFormat("NL123456789B01")
+
+		// validate existence
+		validity := vat.ValidateExistence("NL123456789B01")
+*/
 package vat
 
 import (
 	"bytes"
 	"encoding/xml"
 	"errors"
-	"html/template"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -15,7 +26,7 @@ import (
 
 type viesResponse struct {
 	CountryCode string
-	VATnumber   string
+	VATNumber   string
 	RequestDate time.Time
 	Valid       bool
 	Name        string
@@ -23,25 +34,14 @@ type viesResponse struct {
 }
 
 const serviceURL = "http://ec.europa.eu/taxation_customs/vies/services/checkVatService"
-const envelope = `
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:v1="http://schemas.conversesolutions.com/xsd/dmticta/v1">
-<soapenv:Header/>
-<soapenv:Body>
-  <checkVat xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types">
-    <countryCode>{{.countryCode}}</countryCode>
-    <vatNumber>{{.vatNumber}}</vatNumber>
-  </checkVat>
-</soapenv:Body>
-</soapenv:Envelope>
-`
 
-var (
-	ErrInvalidVATNumber   = errors.New("VAT number is invalid.")
-	ErrServiceUnreachable = errors.New("Validation service is offline.")
-)
+// ErrInvalidVATNumber will be returned when an invalid VAT number is passed to a function that validates existence.
+var ErrInvalidVATNumber = errors.New("VAT number is invalid")
 
-// Validate validates a VAT number by format and existence.
-//
+// ErrServiceUnreachable will be returned when VIES VAT validation API is unreachable.
+var ErrServiceUnreachable = errors.New("Validation service is offline")
+
+// Validate validates a VAT number by both format and existence.
 // The existence check uses the VIES VAT validation SOAP API and will only run when format validation passes.
 func Validate(n string) (bool, error) {
 	format, err := ValidateFormat(n)
@@ -107,16 +107,13 @@ func ValidateExistence(n string) (bool, error) {
 	return r.Valid, err
 }
 
-// Check returns *VATresponse for vat number
+// checkVAT returns *ViesResponse for a VAT number
 func checkVAT(vatNumber string) (*viesResponse, error) {
 	if len(vatNumber) < 3 {
 		return nil, ErrInvalidVATNumber
 	}
 
-	e, err := getEnvelope(vatNumber)
-	if err != nil {
-		return nil, err
-	}
+	e := getEnvelope(vatNumber)
 	eb := bytes.NewBufferString(e)
 	client := http.Client{
 		Timeout: 10 * time.Second,
@@ -127,7 +124,6 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 	}
 	defer res.Body.Close()
 
-	// TODO: Use reader XML decoder
 	xmlRes, err := ioutil.ReadAll(res.Body)
 
 	// check if response contains "INVALID_INPUT" string
@@ -142,7 +138,7 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 			Soap    struct {
 				XMLName     xml.Name `xml:"checkVatResponse"`
 				CountryCode string   `xml:"countryCode"`
-				VATnumber   string   `xml:"vatNumber"`
+				VATNumber   string   `xml:"vatNumber"`
 				RequestDate string   `xml:"requestDate"` // 2015-03-06+01:00
 				Valid       bool     `xml:"valid"`
 				Name        string   `xml:"name"`
@@ -161,7 +157,7 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 
 	r := &viesResponse{
 		CountryCode: rd.Soap.Soap.CountryCode,
-		VATnumber:   rd.Soap.Soap.VATnumber,
+		VATNumber:   rd.Soap.Soap.VATNumber,
 		RequestDate: pDate,
 		Valid:       rd.Soap.Soap.Valid,
 		Name:        rd.Soap.Soap.Name,
@@ -172,18 +168,24 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 }
 
 // getEnvelope parses envelope template
-func getEnvelope(vatNumber string) (string, error) {
-	t, err := template.New("envelope").Parse(envelope)
-	if err != nil {
-		return "", err
-	}
+func getEnvelope(n string) string {
+	n = strings.ToUpper(n)
+	countryCode := n[0:2]
+	vatNumber := n[2:]
+	const envelopeTemplate = `
+	<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+	<soapenv:Header/>
+	<soapenv:Body>
+	  <checkVat xmlns="urn:ec.europa.eu:taxud:vies:services:checkVat:types">
+	    <countryCode>{{.countryCode}}</countryCode>
+	    <vatNumber>{{.vatNumber}}</vatNumber>
+	  </checkVat>
+	</soapenv:Body>
+	</soapenv:Envelope>
+	`
 
-	var result bytes.Buffer
-	if err := t.Execute(&result, map[string]string{
-		"countryCode": strings.ToUpper(vatNumber[0:2]),
-		"vatNumber":   vatNumber[2:],
-	}); err != nil {
-		return "", err
-	}
-	return result.String(), nil
+	e := envelopeTemplate
+	e = strings.Replace(e, "{{.countryCode}}", countryCode, 1)
+	e = strings.Replace(e, "{{.vatNumber}}", vatNumber, 1)
+	return e
 }
