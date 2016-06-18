@@ -1,3 +1,4 @@
+// Package vat provides VAT number verification for Golang.
 package vat
 
 import (
@@ -34,13 +35,14 @@ const envelope = `
 </soapenv:Envelope>
 `
 
-var Timeout = 10 // seconds
-
 var (
 	ErrInvalidVATNumber   = errors.New("VAT number is invalid.")
 	ErrServiceUnreachable = errors.New("Validation service is offline.")
 )
 
+// Validate validates a VAT number by format and existence.
+//
+// The existence check uses the VIES VAT validation SOAP API and will only run when format validation passes.
 func Validate(n string) (bool, error) {
 	format, err := ValidateFormat(n)
 	existence := false
@@ -52,6 +54,7 @@ func Validate(n string) (bool, error) {
 	return (format && existence), err
 }
 
+// ValidateFormat validates a VAT number by its format.
 func ValidateFormat(n string) (bool, error) {
 	patterns := map[string]string{
 		"AT": "U[A-Z\\d]{8}",
@@ -98,6 +101,7 @@ func ValidateFormat(n string) (bool, error) {
 	return matched, err
 }
 
+// ValidateExistence validates a VAT number by its existence using the VIES VAT API (using SOAP)
 func ValidateExistence(n string) (bool, error) {
 	r, err := checkVAT(n)
 	return r.Valid, err
@@ -115,7 +119,7 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 	}
 	eb := bytes.NewBufferString(e)
 	client := http.Client{
-		Timeout: time.Duration(Timeout) * time.Second,
+		Timeout: 10 * time.Second,
 	}
 	res, err := client.Post(serviceURL, "text/xml;charset=UTF-8", eb)
 	if err != nil {
