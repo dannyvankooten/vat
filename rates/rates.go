@@ -1,3 +1,14 @@
+/*
+Package rates provides VAT rates for EU countries in Go.
+
+Example:
+		// get all country rate periods
+		c, err := rates.Country("NL")
+
+		// get standard VAT rate that is currently in effect
+		rate, err := c.Rate("standard")
+		fmt.Printf( "%s has a standard VAT rate of %.2f", c.Name, rate )
+*/
 package rates
 
 import (
