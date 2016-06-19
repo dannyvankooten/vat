@@ -1,17 +1,20 @@
 package rates
 
-import (
-	"fmt"
-	"log"
-	"testing"
-)
+import "testing"
 
 func TestFetch(t *testing.T) {
-	c, err := Country("NL")
-	if err != nil {
-		log.Fatal(err)
+	c, _ := Country("NL")
+
+	if r, _ := c.Rate("standard"); r != 21 {
+		t.Errorf("Standard VAT rate for NL is supposed to be 21. Got %.2f", r)
 	}
 
-	fmt.Println(c.Name)
-	fmt.Println(c.Periods[0].Rates["standard"])
+	if r, _ := c.Rate("reduced"); r != 6 {
+		t.Errorf("Reduced VAT rate for NL is supposed to be 6. Got %.2f", r)
+	}
+
+	c, _ = Country("RO")
+	if r, _ := c.Rate("standard"); r != 20 {
+		t.Errorf("Standard VAT rate for RO is supposed to be 20. Got %.2f", r)
+	}
 }
