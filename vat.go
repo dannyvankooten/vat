@@ -1,5 +1,5 @@
 /*
-Package vat provides VAT number verification for Golang.
+Package vat provides VAT number verification for Go.
 
 Example:
 		// validates format + existence
