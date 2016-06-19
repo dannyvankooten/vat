@@ -105,3 +105,15 @@ func TestValidateFormat(t *testing.T) {
 
 	}
 }
+
+func TestValidateExistence(t *testing.T) {
+	valid, _ := ValidateExistence("IE6388047V")
+	if !valid {
+		t.Error("IE6388047V is a valid VAT number.")
+	}
+
+	valid, _ = ValidateExistence("NL123456789B01")
+	if valid {
+		t.Error("NL123456789B01 is not a valid VAT number.")
+	}
+}
