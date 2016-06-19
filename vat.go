@@ -38,8 +38,8 @@ const serviceURL = "http://ec.europa.eu/taxation_customs/vies/services/checkVatS
 // ErrInvalidVATNumber will be returned when an invalid VAT number is passed to a function that validates existence.
 var ErrInvalidVATNumber = errors.New("VAT number is invalid")
 
-// ErrServiceUnreachable will be returned when VIES VAT validation API is unreachable.
-var ErrServiceUnreachable = errors.New("Validation service is offline")
+// ErrServiceUnavailable will be returned when VIES VAT validation API is unreachable.
+var ErrServiceUnavailable = errors.New("Validation service is unreachable")
 
 // Validate validates a VAT number by both format and existence.
 // The existence check uses the VIES VAT validation SOAP API and will only run when format validation passes.
@@ -120,7 +120,7 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 	}
 	res, err := client.Post(serviceURL, "text/xml;charset=UTF-8", eb)
 	if err != nil {
-		return nil, ErrServiceUnreachable
+		return nil, ErrServiceUnavailable
 	}
 	defer res.Body.Close()
 
