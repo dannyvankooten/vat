@@ -1,4 +1,4 @@
-package rates
+package vat
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 )
 
 func TestCountryRates_Rate(t *testing.T) {
-	c, _ := Country("NL")
+	c, _ := GetCountryRates("NL")
 
 	if r, _ := c.Rate("standard"); r != 21 {
 		t.Errorf("Standard VAT rate for NL is supposed to be 21. Got %.2f", r)
@@ -16,14 +16,14 @@ func TestCountryRates_Rate(t *testing.T) {
 		t.Errorf("Reduced VAT rate for NL is supposed to be 6. Got %.2f", r)
 	}
 
-	c, _ = Country("RO")
+	c, _ = GetCountryRates("RO")
 	if r, _ := c.Rate("standard"); r != 20 {
 		t.Errorf("Standard VAT rate for RO is supposed to be 20. Got %.2f", r)
 	}
 }
 
 func ExampleCountryRates_Rate() {
-	c, _ := Country("NL")
+	c, _ := GetCountryRates("NL")
 	r, _ := c.Rate("standard")
 
 	fmt.Printf("Standard VAT rate for %s is %.2f", c.Name, r)

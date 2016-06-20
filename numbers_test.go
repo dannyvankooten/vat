@@ -77,13 +77,13 @@ var tests = []struct {
 
 func BenchmarkValidateFormat(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		ValidateFormat("NL" + string(i))
+		ValidateNumberFormat("NL" + string(i))
 	}
 }
 
-func TestValidate(t *testing.T) {
+func TestValidateNumber(t *testing.T) {
 	for _, test := range tests {
-		valid, err := ValidateFormat(test.number)
+		valid, err := ValidateNumberFormat(test.number)
 		if err != nil {
 			panic(err)
 		}
@@ -94,16 +94,16 @@ func TestValidate(t *testing.T) {
 	}
 }
 
-func ExampleValidate() {
+func ExampleValidateNumber() {
 	vatNumber := "IE6388047V"
-	valid, _ := Validate(vatNumber)
+	valid, _ := ValidateNumber(vatNumber)
 	fmt.Printf("Is %s valid: %t", vatNumber, valid)
 	// Output: Is IE6388047V valid: true
 }
 
-func TestValidateFormat(t *testing.T) {
+func TestValidateNumberFormat(t *testing.T) {
 	for _, test := range tests {
-		valid, err := ValidateFormat(test.number)
+		valid, err := ValidateNumberFormat(test.number)
 
 		if err != nil {
 			panic(err)
@@ -116,13 +116,13 @@ func TestValidateFormat(t *testing.T) {
 	}
 }
 
-func TestValidateExistence(t *testing.T) {
-	valid, _ := ValidateExistence("IE6388047V")
+func TestValidateNumberExistence(t *testing.T) {
+	valid, _ := ValidateNumberExistence("IE6388047V")
 	if !valid {
 		t.Error("IE6388047V is a valid VAT number.")
 	}
 
-	valid, _ = ValidateExistence("NL123456789B01")
+	valid, _ = ValidateNumberExistence("NL123456789B01")
 	if valid {
 		t.Error("NL123456789B01 is not a valid VAT number.")
 	}

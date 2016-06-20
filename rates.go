@@ -1,15 +1,4 @@
-/*
-Package rates provides VAT rates for EU countries in Go.
-
-Example:
-		// get all country rate periods
-		c, err := rates.Country("NL")
-
-		// get standard VAT rate that is currently in effect
-		rate, err := c.Rate("standard")
-		fmt.Printf( "%s has a standard VAT rate of %.2f", c.Name, rate )
-*/
-package rates
+package vat
 
 import (
 	"encoding/json"
@@ -37,10 +26,7 @@ type apiResponse struct {
 
 var countryRates []CountryRates
 
-// ErrServiceUnavailable will be returned when jsonvat.com is unreachable
-var ErrServiceUnavailable = errors.New("VAT Rates API is unavailable")
-
-// ErrInvalidCountryCode will be returned when calling Country with an invalid country code
+// ErrInvalidCountryCode will be returned when calling GetCountryRates with an invalid country code
 var ErrInvalidCountryCode = errors.New("Unknown country code.")
 
 // ErrInvalidRateLevel will be returned when getting wrong rate level
@@ -61,8 +47,8 @@ func (r *CountryRates) Rate(level string) (float32, error) {
 	return 0.00, ErrInvalidRateLevel
 }
 
-// Country gets the CountryRates struct for a country by its ISO-3166-1-alpha2 country code.
-func Country(c string) (CountryRates, error) {
+// GetCountryRates gets the CountryRates struct for a country by its ISO-3166-1-alpha2 country code.
+func GetCountryRates(c string) (CountryRates, error) {
 	rates, err := fetch()
 	var rate CountryRates
 
