@@ -3,7 +3,7 @@ Package vat
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/dannyvankooten/vat)](https://goreportcard.com/report/github.com/dannyvankooten/vat)
 [![GoDoc](https://godoc.org/github.com/dannyvankooten/vat?status.svg)](https://godoc.org/github.com/dannyvankooten/vat)
-![License](https://img.shields.io/dub/l/vibe-d.svg)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/dannyvankooten/vat/master/LICENSE)
 
 Package for validating VAT numbers & retrieving VAT rates in Go.
 
