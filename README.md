@@ -1,8 +1,8 @@
 Package vat
 ===
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/dannyvankooten/govat)](https://goreportcard.com/report/github.com/dannyvankooten/govat)
-[![GoDoc](https://godoc.org/github.com/dannyvankooten/govat?status.svg)](https://godoc.org/github.com/dannyvankooten/govat)
+[![Go Report Card](https://goreportcard.com/badge/github.com/dannyvankooten/vat)](https://goreportcard.com/report/github.com/dannyvankooten/vat)
+[![GoDoc](https://godoc.org/github.com/dannyvankooten/vat?status.svg)](https://godoc.org/github.com/dannyvankooten/vat)
 ![License](https://img.shields.io/dub/l/vibe-d.svg)
 
 Package for validating VAT numbers & retrieving VAT rates in Go.
@@ -12,13 +12,13 @@ Package for validating VAT numbers & retrieving VAT rates in Go.
 Use go get.
 
 ```
-go get github.com/dannyvankooten/govat
+go get github.com/dannyvankooten/vat
 ```
 
 Then import the package into your own code.
 
 ```
-import "github.com/dannyvankooten/govat"
+import "github.com/dannyvankooten/vat"
 ```
 
 ## Usage
@@ -30,7 +30,7 @@ VAT numbers can be validated by format, existence or both. VAT numbers are looke
 ```go
 package main
 
-import "github.com/dannyvankooten/govat"
+import "github.com/dannyvankooten/vat"
 
 func main() {
   // validates format + existence
@@ -53,7 +53,7 @@ package main
 
 import (
   "fmt"
-  "github.com/dannyvankooten/govat/rates"
+  "github.com/dannyvankooten/vat/rates"
 )
 
 func main() {
