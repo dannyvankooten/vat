@@ -46,7 +46,9 @@ func main() {
 
 ### Retrieving VAT rates
 
-VAT numbers van be validated by format, existence or both.
+To get VAT rate periods for a country, first get a CountryRates struct using the country's ISO-3166-1-alpha2 code.
+
+You can then get the rate that is currently in effect using the `Rate` function.
 
 ```go
 package main
