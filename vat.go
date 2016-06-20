@@ -7,7 +7,7 @@ Validate a VAT number
 		validity := vat.Validate("NL123456789B01")
 
 Get VAT rate that is currently in effect for a given country
-		c, _ := GetCountryRates("NL")
+		c, _ := vat.GetCountryRates("NL")
 		r, _ := c.Rate("standard")
 */
 package vat
