@@ -56,7 +56,7 @@ func (cr *CountryRates) Rate(level string) (float32, error) {
 }
 
 // GetCountryRates gets the CountryRates struct for a country by its ISO-3166-1-alpha2 country code.
-func GetCountryRates(c string) (CountryRates, error) {
+func GetCountryRates(countryCode string) (CountryRates, error) {
 	var rate CountryRates
 	rates, err := GetRates()
 
@@ -65,7 +65,7 @@ func GetCountryRates(c string) (CountryRates, error) {
 	}
 
 	for _, r := range rates {
-		if r.CountryCode == c {
+		if r.CountryCode == countryCode {
 			return r, nil
 		}
 	}
