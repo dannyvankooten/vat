@@ -7,15 +7,17 @@ import (
 	"time"
 )
 
+type RatePeriod struct {
+	EffectiveFrom string `json:"effective_from"`
+	Rates         map[string]float32
+}
+
 // CountryRates holds the various differing VAT rate periods for a given country
 type CountryRates struct {
 	Name        string `json:"name"`
 	Code        string `json:"code"`
 	CountryCode string `json:"country_code"`
-	Periods     []struct {
-		EffectiveFrom string `json:"effective_from"`
-		Rates         map[string]float32
-	}
+	Periods     []RatePeriod
 }
 
 type apiResponse struct {
@@ -32,19 +34,32 @@ var ErrInvalidCountryCode = errors.New("Unknown country code.")
 // ErrInvalidRateLevel will be returned when getting wrong rate level
 var ErrInvalidRateLevel = errors.New("Unknown rate level")
 
-// Rate returns the currently active rate
-func (r *CountryRates) Rate(level string) (float32, error) {
-	now := time.Now()
+// RateOn returns the effective VAT rate on a given date
+func (cr *CountryRates) RateOn(t time.Time, level string) (float32, error) {
+	var activePeriod RatePeriod
+	var activePeriodDate time.Time
 
-	// return the first rate where EffectiveFrom is in the past.
-	for _, p := range r.Periods {
-		date, _ := time.Parse("0000-01-01", p.EffectiveFrom)
-		if now.After(date) {
-			return p.Rates[level], nil
+	// find active period for the given time
+	for _, p := range cr.Periods {
+		periodDate, _ := time.Parse("2006-01-01", p.EffectiveFrom)
+		if t.After(periodDate) && periodDate.After(activePeriodDate) {
+			activePeriod = p
+			activePeriodDate = periodDate
 		}
 	}
 
-	return 0.00, ErrInvalidRateLevel
+	activeRate, ok := activePeriod.Rates[level]
+	if !ok {
+		return 0.00, ErrInvalidRateLevel
+	}
+
+	return activeRate, nil
+}
+
+// Rate returns the currently active rate
+func (cr *CountryRates) Rate(level string) (float32, error) {
+	now := time.Now()
+	return cr.RateOn(now, level)
 }
 
 // GetCountryRates gets the CountryRates struct for a country by its ISO-3166-1-alpha2 country code.
