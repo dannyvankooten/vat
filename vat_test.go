@@ -1,6 +1,9 @@
 package vat
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 var tests = []struct {
 	number string
@@ -89,6 +92,13 @@ func TestValidate(t *testing.T) {
 			t.Errorf("Expected %v for %v, got %v", test.valid, test.number, valid)
 		}
 	}
+}
+
+func ExampleValidate() {
+	vatNumber := "IE6388047V"
+	valid, _ := Validate(vatNumber)
+	fmt.Printf("Is %s valid: %t", vatNumber, valid)
+	// Output: Is IE6388047V valid: true
 }
 
 func TestValidateFormat(t *testing.T) {
