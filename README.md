@@ -48,7 +48,7 @@ func main() {
 
 To get VAT rate periods for a country, first get a CountryRates struct using the country's ISO-3166-1-alpha2 code.
 
-You can then get the rate that is currently in effect using the `Rate` function.
+You can get the rate that is currently in effect using the `GetRate` function.
 
 ```go
 package main
@@ -60,7 +60,7 @@ import (
 
 func main() {
   c, _ := vat.GetCountryRates("NL")
-  r, _ := c.Rate("standard")
+  r, _ := c.GetRate("standard")
 
   fmt.Printf("Standard VAT rate for NL is %.2f", r)
   // Output: Standard VAT rate for NL is 21.00

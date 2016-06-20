@@ -30,13 +30,13 @@ var ErrInvalidCountryCode = errors.New("Unknown country code.")
 // ErrInvalidRateLevel will be returned when getting wrong rate level
 var ErrInvalidRateLevel = errors.New("Unknown rate level")
 
-// RateOn returns the effective VAT rate on a given date
-func (cr *CountryRates) RateOn(t time.Time, level string) (float32, error) {
+// GetRateOn returns the effective VAT rate on a given date
+func (cr *CountryRates) GetRateOn(t time.Time, level string) (float32, error) {
 	var activePeriod RatePeriod
 
 	// find active period for the given time
 	for _, p := range cr.Periods {
-		if t.After(p.EffectiveFrom) && p.EffectiveFrom.After(activePeriod.EffectiveFrom) {
+		if t.After(p.EffectiveFrom) && (activePeriod.EffectiveFrom.IsZero() || p.EffectiveFrom.After(activePeriod.EffectiveFrom)) {
 			activePeriod = p
 		}
 	}
@@ -49,10 +49,10 @@ func (cr *CountryRates) RateOn(t time.Time, level string) (float32, error) {
 	return activeRate, nil
 }
 
-// Rate returns the currently active rate
-func (cr *CountryRates) Rate(level string) (float32, error) {
+// GetRate returns the currently active rate
+func (cr *CountryRates) GetRate(level string) (float32, error) {
 	now := time.Now()
-	return cr.RateOn(now, level)
+	return cr.GetRateOn(now, level)
 }
 
 // GetCountryRates gets the CountryRates struct for a country by its ISO-3166-1-alpha2 country code.
