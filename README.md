@@ -1,7 +1,6 @@
 Package vat
 ===
 
-![Project status](https://img.shields.io/badge/version-1.3.0-green.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/dannyvankooten/govat)](https://goreportcard.com/report/github.com/dannyvankooten/govat)
 [![GoDoc](https://godoc.org/github.com/dannyvankooten/govat?status.svg)](https://godoc.org/github.com/dannyvankooten/govat)
 ![License](https://img.shields.io/dub/l/vibe-d.svg)
