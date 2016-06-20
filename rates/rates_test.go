@@ -1,8 +1,11 @@
 package rates
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
-func TestFetch(t *testing.T) {
+func TestCountryRates_Rate(t *testing.T) {
 	c, _ := Country("NL")
 
 	if r, _ := c.Rate("standard"); r != 21 {
@@ -17,4 +20,12 @@ func TestFetch(t *testing.T) {
 	if r, _ := c.Rate("standard"); r != 20 {
 		t.Errorf("Standard VAT rate for RO is supposed to be 20. Got %.2f", r)
 	}
+}
+
+func ExampleCountryRates_Rate() {
+	c, _ := Country("NL")
+	r, _ := c.Rate("standard")
+
+	fmt.Printf("Standard VAT rate for %s is %.2f", c.Name, r)
+	// Output: Standard VAT rate for Netherlands is 21.00
 }
