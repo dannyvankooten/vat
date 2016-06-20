@@ -25,7 +25,7 @@ import "github.com/dannyvankooten/vat"
 
 ### Validating VAT numbers
 
-VAT numbers can be ValidateNumberd by format, existence or both. VAT numbers are looked up using the [VIES VAT validation API](http://ec.europa.eu/taxation_customs/vies/).
+VAT numbers can be validated by format, existence or both. VAT numbers are looked up using the [VIES VAT validation API](http://ec.europa.eu/taxation_customs/vies/).
 
 ```go
 package main
@@ -33,13 +33,13 @@ package main
 import "github.com/dannyvankooten/vat"
 
 func main() {
-  // ValidateNumbers format + existence
+  // Validate number by format + existence
   validity := vat.ValidateNumber("NL123456789B01")
 
-  // ValidateNumber format
+  // Validate number format
   validity := vat.ValidateNumberFormat("NL123456789B01")
 
-  // ValidateNumber existence
+  // Validate number existence
   validity := vat.ValidateNumberExistence("NL123456789B01")
 }
 ```
