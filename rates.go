@@ -92,7 +92,6 @@ func FetchRates() ([]CountryRates, error) {
 		return nil, err
 	}
 
-	type CR CountryRates
 	apiResponse := &struct {
 		Details string
 		Version string
