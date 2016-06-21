@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -22,6 +23,7 @@ type CountryRates struct {
 	Periods     []RatePeriod
 }
 
+var mutex = &sync.Mutex{} // protect countriesRates
 var countriesRates []CountryRates
 
 // ErrInvalidCountryCode will be returned when calling GetCountryRates with an invalid country code
@@ -77,9 +79,11 @@ func GetCountryRates(countryCode string) (CountryRates, error) {
 func GetRates() ([]CountryRates, error) {
 	var err error
 
+	mutex.Lock()
 	if countriesRates == nil {
 		countriesRates, err = FetchRates()
 	}
+	mutex.Unlock()
 
 	return countriesRates, err
 }
