@@ -130,7 +130,7 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 			}
 		}
 	}
-	if err := xml.Unmarshal(xmlRes, &rd); err != nil {
+	if err = xml.Unmarshal(xmlRes, &rd); err != nil {
 		return nil, err
 	}
 
