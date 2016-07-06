@@ -100,7 +100,7 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 	e := getEnvelope(vatNumber)
 	eb := bytes.NewBufferString(e)
 	client := http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: (time.Duration(ServiceTimeout) * time.Second),
 	}
 	res, err := client.Post(serviceURL, "text/xml;charset=UTF-8", eb)
 	if err != nil {

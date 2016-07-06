@@ -91,7 +91,10 @@ func GetRates() ([]CountryRates, error) {
 // FetchRates fetches the latest VAT rates from jsonvat.com and updates the in-memory rates
 func FetchRates() ([]CountryRates, error) {
 
-	r, err := http.Get("https://jsonvat.com/")
+	client := http.Client{
+		Timeout: (time.Duration(ServiceTimeout) * time.Second),
+	}
+	r, err := client.Get("https://jsonvat.com/")
 	if err != nil {
 		return nil, err
 	}

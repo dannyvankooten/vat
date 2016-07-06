@@ -16,3 +16,6 @@ import "errors"
 
 // ErrServiceUnavailable will be returned when VIES VAT validation API or jsonvat.com is unreachable.
 var ErrServiceUnavailable = errors.New("Service is unreachable")
+
+// ServiceTimeout indicates the number of seconds before a service request times out.
+var ServiceTimeout = 10
