@@ -106,6 +106,9 @@ func FetchRates() ([]CountryRates, error) {
 	}{}
 
 	err = json.NewDecoder(r.Body).Decode(&apiResponse)
+	if err != nil {
+		return nil, err
+	}
 
 	// convert EffectiveFrom to a proper time.Time for each rate period
 	for idx1, cr := range apiResponse.Rates {
