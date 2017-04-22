@@ -27,10 +27,10 @@ var mutex = &sync.Mutex{} // protect countriesRates
 var countriesRates []CountryRates
 
 // ErrInvalidCountryCode will be returned when calling GetCountryRates with an invalid country code
-var ErrInvalidCountryCode = errors.New("Unknown country code.")
+var ErrInvalidCountryCode = errors.New("vat: unknown country code")
 
 // ErrInvalidRateLevel will be returned when getting wrong rate level
-var ErrInvalidRateLevel = errors.New("Unknown rate level")
+var ErrInvalidRateLevel = errors.New("vat: unknown rate level")
 
 // GetRateOn returns the effective VAT rate on a given date
 func (cr *CountryRates) GetRateOn(t time.Time, level string) (float32, error) {
