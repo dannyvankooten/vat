@@ -34,13 +34,13 @@ import "github.com/dannyvankooten/vat"
 
 func main() {
   // Validate number by format + existence
-  validity := vat.ValidateNumber("NL123456789B01")
+  validity, err := vat.ValidateNumber("NL123456789B01")
 
   // Validate number format
-  validity := vat.ValidateNumberFormat("NL123456789B01")
+  validity, err := vat.ValidateNumberFormat("NL123456789B01")
 
   // Validate number existence
-  validity := vat.ValidateNumberExistence("NL123456789B01")
+  validity, err := vat.ValidateNumberExistence("NL123456789B01")
 }
 ```
 
@@ -59,8 +59,8 @@ import (
 )
 
 func main() {
-  c, _ := vat.GetCountryRates("NL")
-  r, _ := c.GetRate("standard")
+  c, err := vat.GetCountryRates("NL")
+  r, err := c.GetRate("standard")
 
   fmt.Printf("Standard VAT rate for NL is %.2f", r)
   // Output: Standard VAT rate for NL is 21.00
