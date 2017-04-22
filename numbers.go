@@ -23,7 +23,7 @@ type viesResponse struct {
 const serviceURL = "http://ec.europa.eu/taxation_customs/vies/services/checkVatService"
 
 // ErrInvalidVATNumber will be returned when an invalid VAT number is passed to a function that validates existence.
-var ErrInvalidVATNumber = errors.New("VAT number is invalid")
+var ErrInvalidVATNumber = errors.New("vat: vat number is invalid")
 
 // ValidateNumber validates a VAT number by both format and existence.
 // The existence check uses the VIES VAT validation SOAP API and will only run when format validation passes.
@@ -109,6 +109,9 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 	defer res.Body.Close()
 
 	xmlRes, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
 
 	// check if response contains "INVALID_INPUT" string
 	if bytes.Contains(xmlRes, []byte("INVALID_INPUT")) {
