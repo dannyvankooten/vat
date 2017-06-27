@@ -14,7 +14,7 @@ import (
 type viesResponse struct {
 	CountryCode string
 	VATNumber   string
-	RequestDate time.Time
+	RequestDate string
 	Valid       bool
 	Name        string
 	Address     string
@@ -137,15 +137,10 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 		return nil, err
 	}
 
-	pDate, err := time.Parse("2006-01-02-07:00", rd.Soap.Soap.RequestDate)
-	if err != nil {
-		return nil, err
-	}
-
 	r := &viesResponse{
 		CountryCode: rd.Soap.Soap.CountryCode,
 		VATNumber:   rd.Soap.Soap.VATNumber,
-		RequestDate: pDate,
+		RequestDate: rd.Soap.Soap.RequestDate,
 		Valid:       rd.Soap.Soap.Valid,
 		Name:        rd.Soap.Soap.Name,
 		Address:     rd.Soap.Soap.Address,
