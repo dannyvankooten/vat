@@ -88,7 +88,10 @@ func ValidateNumberFormat(n string) (bool, error) {
 // ValidateNumberExistence validates a VAT number by its existence using the VIES VAT API (using SOAP)
 func ValidateNumberExistence(n string) (bool, error) {
 	r, err := checkVAT(n)
-	return r.Valid, err
+	if err != nil {
+		return false, err
+	}
+	return r.Valid, nil
 }
 
 // checkVAT returns *ViesResponse for a VAT number
