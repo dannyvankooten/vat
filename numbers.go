@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-type viesResponse struct {
+type ViesResponse struct {
 	CountryCode string
 	VATNumber   string
 	RequestDate string
@@ -87,15 +87,15 @@ func ValidateNumberFormat(n string) (bool, error) {
 
 // ValidateNumberExistence validates a VAT number by its existence using the VIES VAT API (using SOAP)
 func ValidateNumberExistence(n string) (bool, error) {
-	r, err := checkVAT(n)
+	r, err := Lookup(n)
 	if err != nil {
 		return false, err
 	}
 	return r.Valid, nil
 }
 
-// checkVAT returns *ViesResponse for a VAT number
-func checkVAT(vatNumber string) (*viesResponse, error) {
+// Lookup returns *ViesResponse for a VAT number
+func Lookup(vatNumber string) (*ViesResponse, error) {
 	if len(vatNumber) < 3 {
 		return nil, ErrInvalidVATNumber
 	}
@@ -140,7 +140,7 @@ func checkVAT(vatNumber string) (*viesResponse, error) {
 		return nil, err
 	}
 
-	r := &viesResponse{
+	r := &ViesResponse{
 		CountryCode: rd.Soap.Soap.CountryCode,
 		VATNumber:   rd.Soap.Soap.VATNumber,
 		RequestDate: rd.Soap.Soap.RequestDate,
