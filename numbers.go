@@ -35,40 +35,41 @@ func ValidateNumber(n string) (bool, error) {
 		existence, err = ValidateNumberExistence(n)
 	}
 
-	return (format && existence), err
+	return format && existence, err
 }
 
 // ValidateNumberFormat validates a VAT number by its format.
 func ValidateNumberFormat(n string) (bool, error) {
 	patterns := map[string]string{
-		"AT": "U[A-Z\\d]{8}",
-		"BE": "(0\\d{9}|\\d{10})",
-		"BG": "\\d{9,10}",
-		"CY": "\\d{8}[A-Z]",
-		"CZ": "\\d{8,10}",
-		"DE": "\\d{9}",
-		"DK": "(\\d{2} ?){3}\\d{2}",
-		"EE": "\\d{9}",
-		"EL": "\\d{9}",
-		"ES": "[A-Z]\\d{7}[A-Z]|\\d{8}[A-Z]|[A-Z]\\d{8}",
-		"FI": "\\d{8}",
-		"FR": "([A-Z]{2}|\\d{2})\\d{9}",
-		"GB": "\\d{9}|\\d{12}|(GD|HA)\\d{3}",
-		"HR": "\\d{11}",
-		"HU": "\\d{8}",
-		"IE": "[A-Z\\d]{8}|[A-Z\\d]{9}",
-		"IT": "\\d{11}",
-		"LT": "(\\d{9}|\\d{12})",
-		"LU": "\\d{8}",
-		"LV": "\\d{11}",
-		"MT": "\\d{8}",
-		"NL": "\\d{9}B\\d{2}",
-		"PL": "\\d{10}",
-		"PT": "\\d{9}",
-		"RO": "\\d{2,10}",
-		"SE": "\\d{12}",
-		"SI": "\\d{8}",
-		"SK": "\\d{10}",
+		"AT": `U[A-Z0-9]{8}`,
+		"BE": `(0[0-9]{9}|[0-9]{10})`,
+		"BG": `[0-9]{9,10}`,
+		"CH": `(?:E(?:-| )[0-9]{3}(?:\.| )[0-9]{3}(?:\.| )[0-9]{3}( MWST)?|E[0-9]{9}(?:MWST)?)`,
+		"CY": `[0-9]{8}[A-Z]`,
+		"CZ": `[0-9]{8,10}`,
+		"DE": `[0-9]{9}`,
+		"DK": `[0-9]{8}`,
+		"EE": `[0-9]{9}`,
+		"EL": `[0-9]{9}`,
+		"ES": `[A-Z][0-9]{7}[A-Z]|[0-9]{8}[A-Z]|[A-Z][0-9]{8}`,
+		"FI": `[0-9]{8}`,
+		"FR": `([A-Z]{2}|[0-9]{2})[0-9]{9}`,
+		"GB": `[0-9]{9}|[0-9]{12}|(GD|HA)[0-9]{3}`,
+		"HR": `[0-9]{11}`,
+		"HU": `[0-9]{8}`,
+		"IE": `[A-Z0-9]{7}[A-Z]|[A-Z0-9]{7}[A-W][A-I]`,
+		"IT": `[0-9]{11}`,
+		"LT": `([0-9]{9}|[0-9]{12})`,
+		"LU": `[0-9]{8}`,
+		"LV": `[0-9]{11}`,
+		"MT": `[0-9]{8}`,
+		"NL": `[0-9]{9}B[0-9]{2}`,
+		"PL": `[0-9]{10}`,
+		"PT": `[0-9]{9}`,
+		"RO": `[0-9]{2,10}`,
+		"SE": `[0-9]{12}`,
+		"SI": `[0-9]{8}`,
+		"SK": `[0-9]{10}`,
 	}
 
 	if len(n) < 3 {
@@ -103,7 +104,7 @@ func Lookup(vatNumber string) (*ViesResponse, error) {
 	e := getEnvelope(vatNumber)
 	eb := bytes.NewBufferString(e)
 	client := http.Client{
-		Timeout: (time.Duration(ServiceTimeout) * time.Second),
+		Timeout: time.Duration(ServiceTimeout) * time.Second,
 	}
 	res, err := client.Post(serviceURL, "text/xml;charset=UTF-8", eb)
 	if err != nil {
