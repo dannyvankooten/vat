@@ -18,8 +18,8 @@ func TestCountryRates_GetRate(t *testing.T) {
 	}
 
 	c, _ = GetCountryRates("RO")
-	if r, _ := c.GetRate("standard"); r != 20 {
-		t.Errorf("Standard VAT rate for RO is supposed to be 20. Got %.2f", r)
+	if r, _ := c.GetRate("standard"); r != 19 {
+		t.Errorf("Standard VAT rate for RO is supposed to be 19. Got %.2f", r)
 	}
 }
 
