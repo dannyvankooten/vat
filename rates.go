@@ -115,7 +115,7 @@ func FetchRates() ([]CountryRates, error) {
 	for idx1, cr := range apiResponse.Rates {
 		for idx2, crp := range cr.Periods {
 			crp.EffectiveFromStr = strings.Replace(crp.EffectiveFromStr, "0000-", "2000-", 1)
-			apiResponse.Rates[idx1].Periods[idx2].EffectiveFrom, _ = time.Parse("2006-01-01", crp.EffectiveFromStr)
+			apiResponse.Rates[idx1].Periods[idx2].EffectiveFrom, _ = time.Parse("2006-01-02", crp.EffectiveFromStr)
 		}
 	}
 
