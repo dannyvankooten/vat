@@ -11,15 +11,12 @@ import (
 
 // RatePeriod represents a time and the various activate rates at that time.
 type RatePeriod struct {
-	EffectiveFromStr string `json:"effective_from"`
-	EffectiveFrom    time.Time
-	Rates            map[string]float32
+	EffectiveFrom time.Time
+	Rates         map[string]float32
 }
 
 // CountryRates holds the various differing VAT rate periods for a given country
 type CountryRates struct {
-	Name        string `json:"name"`
-	Code        string `json:"code"`
 	CountryCode string `json:"country_code"`
 	Periods     []RatePeriod
 }
@@ -89,21 +86,23 @@ func GetRates() ([]CountryRates, error) {
 	return countriesRates, err
 }
 
-// FetchRates fetches the latest VAT rates from jsonvat.com and updates the in-memory rates
+// FetchRates fetches the latest VAT rates from ibericode/vat-rates and updates the in-memory rates
 func FetchRates() ([]CountryRates, error) {
-
 	client := http.Client{
 		Timeout: (time.Duration(ServiceTimeout) * time.Second),
 	}
-	r, err := client.Get("https://jsonvat.com/")
+	r, err := client.Get("https://raw.githubusercontent.com/ibericode/vat-rates/master/vat-rates.json")
 	if err != nil {
 		return nil, err
 	}
 
 	apiResponse := &struct {
 		Details string
-		Version string
-		Rates   []CountryRates
+		Version float32
+		Items   map[string][]struct {
+			EffectiveFrom string `json:"effective_from"`
+			Rates         map[string]float32
+		}
 	}{}
 
 	err = json.NewDecoder(r.Body).Decode(&apiResponse)
@@ -111,14 +110,21 @@ func FetchRates() ([]CountryRates, error) {
 		return nil, err
 	}
 
-	// convert EffectiveFrom to a proper time.Time for each rate period
-	for idx1, cr := range apiResponse.Rates {
-		for idx2, crp := range cr.Periods {
-			crp.EffectiveFromStr = strings.Replace(crp.EffectiveFromStr, "0000-", "2000-", 1)
-			apiResponse.Rates[idx1].Periods[idx2].EffectiveFrom, _ = time.Parse("2006-01-02", crp.EffectiveFromStr)
+	rates := []CountryRates{}
+	for code, periods := range apiResponse.Items {
+		rate := CountryRates{CountryCode: code}
+		for _, period := range periods {
+			from := strings.Replace(period.EffectiveFrom, "0000-", "2000-", 1)
+			fromTime, _ := time.Parse("2006-01-02", from)
+			rperiod := RatePeriod{
+				EffectiveFrom: fromTime,
+				Rates:         period.Rates,
+			}
+			rate.Periods = append(rate.Periods, rperiod)
 		}
+
+		rates = append(rates, rate)
 	}
 
-	countriesRates = apiResponse.Rates
-	return countriesRates, err
+	return rates, err
 }
