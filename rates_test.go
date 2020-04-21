@@ -1,7 +1,6 @@
 package vat
 
 import (
-	"fmt"
 	"testing"
 	"time"
 )
@@ -29,12 +28,4 @@ func TestCountryRates_GetRateOn(t *testing.T) {
 	if r, _ := c.GetRateOn(time, "standard"); r != 19 {
 		t.Errorf("Standard VAT rate for NL in 2002 is supposed to be 19. Got %.2f", r)
 	}
-}
-
-func ExampleCountryRates_GetRate() {
-	c, _ := GetCountryRates("NL")
-	r, _ := c.GetRate("standard")
-
-	fmt.Printf("Standard VAT rate for %s is %.2f", c.CountryCode, r)
-	// Output: Standard VAT rate for Netherlands is 21.00
 }
