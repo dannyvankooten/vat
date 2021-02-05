@@ -77,9 +77,10 @@ func ValidateNumberFormat(n string) (bool, error) {
 	}
 
 	n = strings.ToUpper(n)
+	var CountryNotFound = errors.New("CountryNotFound")
 	pattern, ok := patterns[n[0:2]]
 	if !ok {
-		return false, nil
+		return false, CountryNotFound
 	}
 
 	matched, err := regexp.MatchString(pattern, n[2:])
