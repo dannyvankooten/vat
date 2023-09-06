@@ -5,7 +5,7 @@ Package vat
 [![GoDoc](https://godoc.org/github.com/dannyvankooten/vat?status.svg)](https://godoc.org/github.com/dannyvankooten/vat)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/dannyvankooten/vat/master/LICENSE)
 
-Package for validating VAT numbers & retrieving VAT rates in Go.
+Package for validating VAT numbers & retrieving VAT rates (from [ibericode/vat-rates](https://github.com/ibericode/vat-rates)) in Go.
 
 ## Installation
 
@@ -45,6 +45,8 @@ func main() {
 ```
 
 ### Retrieving VAT rates
+
+> This package relies on a [community maintained repository of vat rates](https://github.com/ibericode/vat-rates). We invite you to toggle notifications for that repository and contribute changes to VAT rates in your country once they are announced.
 
 To get VAT rate periods for a country, first get a CountryRates struct using the country's ISO-3166-1-alpha2 code.
 
