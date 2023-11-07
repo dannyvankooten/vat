@@ -25,6 +25,9 @@ const serviceURL = "http://ec.europa.eu/taxation_customs/vies/services/checkVatS
 // ErrInvalidVATNumber will be returned when an invalid VAT number is passed to a function that validates existence.
 var ErrInvalidVATNumber = errors.New("vat: vat number is invalid")
 
+// ErrCountryNotFound indicates that this package could not find a country matching the VAT number prefix.
+var ErrCountryNotFound = errors.New("vat: country not found")
+
 // ValidateNumber validates a VAT number by both format and existence.
 // The existence check uses the VIES VAT validation SOAP API and will only run when format validation passes.
 func ValidateNumber(n string) (bool, error) {
@@ -77,10 +80,9 @@ func ValidateNumberFormat(n string) (bool, error) {
 	}
 
 	n = strings.ToUpper(n)
-	var CountryNotFound = errors.New("CountryNotFound")
 	pattern, ok := patterns[n[0:2]]
 	if !ok {
-		return false, CountryNotFound
+		return false, ErrCountryNotFound
 	}
 
 	matched, err := regexp.MatchString(pattern, n[2:])
